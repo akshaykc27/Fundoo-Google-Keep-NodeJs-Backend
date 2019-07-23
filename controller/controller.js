@@ -98,6 +98,47 @@ exports.login = (req, res) => {
 
 }
 
+exports.login1 =(req,res) => {
+    req.checkBody('email','email is not valid').isEmail();
+    req.checkBody('password','pass should be min 8 characters').isLength({min:8});
+    var errors = req.validationErrors();
+    var response = {}
+    if(errors) {
+        response.success=false;
+        response.error = errors
+        res.status(422).send(response)
+    }
+    else{
+        async.waterfall([
+            function one(callback){
+                userService.login(req.body,(err,result) => {
+                    if(err){
+                        callback(err)
+                    }
+                    else
+                    {
+                        callback(null,result)
+                    }
+                })
+            },
+            function two(result,callback){
+                var token = generateToken.GenerateToken({"id": result[0]._id});
+                callback(null,{result,"token" : token})
+            }
+        ],
+        function(err,results) {
+            if(err){
+                return res.status(500).send(err);
+            }
+            else{
+                console.log("login successful");  
+                return res.status(200).send(results);
+            }
+        }
+        )
+    }
+}
+ 
 exports.forgotPassword = (req,res) => {
     try{
         req.checkBody("email","email is not valid").isEmail();
