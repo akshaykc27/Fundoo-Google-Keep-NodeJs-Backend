@@ -21,4 +21,7 @@ router.post('/archive', noteController.isArchive)
 router.post('/trash', noteController.isTrash);
 router.put('/changeColor',noteController.changeColor);
 
+//label routes
+router.post('/addLabel',middle.verifyToken,noteController.addLabel);
+
 module.exports = router;

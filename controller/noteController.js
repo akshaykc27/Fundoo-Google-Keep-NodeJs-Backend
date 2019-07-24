@@ -112,8 +112,8 @@ exports.updateNote = (req, res) => {
                 response.error = err
                 return res.status(500).send({ response })
             } else {
-                console.log("data in updateNote controller",data);
-                
+                console.log("data in updateNote controller", data);
+
                 response.status = true
                 response.data = data
                 return res.status(200).send({ response })
@@ -248,41 +248,72 @@ exports.isTrash = (req, res) => {
     }
 }
 
-exports.changeColor = (req,res) => {
-    try{
+exports.changeColor = (req, res) => {
+    try {
         console.log("in change color controller");
-        req.checkBody("noteId","note ID is required").not().isEmpty();
-        req.checkBody("color","color is required").not().isEmpty();
+        req.checkBody("noteId", "note ID is required").not().isEmpty();
+        req.checkBody("color", "color is required").not().isEmpty();
 
-        var errors= req.validationErrors();
-        var response={};
-        if(errors){
+        var errors = req.validationErrors();
+        var response = {};
+        if (errors) {
             response.success = false;
             response.error = errors;
             return res.status(422).send(response)
         }
-        else{
+        else {
             var noteId = req.body.noteId;
             var color = req.body.color;
 
-            noteService.changeColor(noteId,color, (err,data) => {
-                if(err){
+            noteService.changeColor(noteId, color, (err, data) => {
+                if (err) {
                     response.error = err;
                     response.success = false;
                     res.status(500).send(response)
                 }
-                else{
-                    response.success= true;
-                    response.data=data;
+                else {
+                    response.success = true;
+                    response.data = data;
                     res.status(200).send(response)
                 }
             });
         }
-        
-    }catch(error){
-        console.log("error in change color controller",error);
+
+    } catch (error) {
+        console.log("error in change color controller", error);
         res.send(error);
-        
+
     }
 
+}
+
+exports.addLabel = (req, res) => {
+    try {
+        console.log('user id =>>>>', req.decoded.payload.id)
+        if (typeof req.decoded.payload.id === 'undefined') {
+            throw new Error('user id is mandatory')
+        } else {
+            console.log("in addLabel note Controller");
+            var labelData = {
+                "labelName": req.body.labelName,
+                "userId": req.decoded.payload.id
+            }
+            const loadLabel = new Promise((resolve, reject) => {
+                noteService.addLabel(labelData).then(data => {
+                    resolve(data)
+                }).catch(err => {
+                    reject(err)
+                })
+            })
+            loadLabel.then(labelDetails => res.status(200).send(labelDetails)).catch(err => {
+                if (err) {
+                    console.log(err);
+                    return res.status(404).send({ 'message': "something went wrong" })
+                }
+            })
+        }
+    } catch (err) {
+        console.log("error in controller", err);
+        return res.status(422).send(err)
+    }
 }
