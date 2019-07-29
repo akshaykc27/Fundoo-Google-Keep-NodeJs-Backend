@@ -262,18 +262,25 @@ exports.changeColor = (noteId, color, callback) => {
 
 exports.addLabel = body => new Promise((resolve, reject) => {
     console.log("in add label note services");
-    var labelData = new labelModel ({
-        "userId" : body.userId,
-        "labelName" : body.labelName
+    var labelData = new labelModel({
+        "userId": body.userId,
+        "labelName": body.labelName
     })
     labelData.save().then(data => {
         resolve(data);
-        console.log(data);  
+        console.log(data);
     }).catch(err => {
         reject(err);
         console.log(err);
-        
+
     })
 
 })
 
+exports.getAllLabels = (userData) => new Promise((resolve, reject) => {
+    labelModel.find({ userId: userData }).then(data => {
+        resolve(data);
+    }).catch(err => {
+        reject(err);
+    })
+})

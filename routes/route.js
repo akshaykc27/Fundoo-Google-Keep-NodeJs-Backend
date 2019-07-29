@@ -6,7 +6,7 @@ const router = express.Router();
 
 // user routes
 router.post('/register',userController.register);
-router.post('/login',userController.login1);
+router.post('/login',userController.login);
 router.post('/forgotPassword',userController.forgotPassword);
 
 
@@ -23,5 +23,6 @@ router.put('/changeColor',noteController.changeColor);
 
 //label routes
 router.post('/addLabel',middle.verifyToken,noteController.addLabel);
+router.get('/getAllLabels',middle.verifyToken,noteController.getAllLabels);
 
 module.exports = router;

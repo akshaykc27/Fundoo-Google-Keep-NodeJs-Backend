@@ -1,0 +1,78 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a Staging Backend API for Fundoo Notes application.",
+        "version": "1.0.0",
+        "title": "Fundoo Notes Staging Swagger API Library",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "email": "akshaykc27@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "host": "localhost:4000",
+    "basePath": "/",
+    "tags": [
+        {
+            "name": "user",
+            "description": "Operation for user"
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "login"
+                ],
+                "description": "login ",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "login",
+                        "schema": {
+                            "$ref": "#definitions/login"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "login successful"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "login": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "String"
+                },
+                "password": {
+                    "type": "String"
+                }
+            },
+            "example": {
+                "email": "akshaykc27@gmail.com",
+                "password": "123456789"
+            }
+        }
+    }
+}

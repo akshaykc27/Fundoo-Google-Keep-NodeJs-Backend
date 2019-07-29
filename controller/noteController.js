@@ -20,6 +20,7 @@ exports.createNote = (req, res) => {
             }
             noteService.createNote(noteData, (err, data) => {
                 if (err) {
+                    console.log('err in ', err)
                     response.status = false
                     response.error = err
                     return res.status(500).send({ response })
@@ -282,21 +283,20 @@ exports.changeColor = (req, res) => {
     } catch (error) {
         console.log("error in change color controller", error);
         res.send(error);
-
     }
-
 }
 
 exports.addLabel = (req, res) => {
     try {
-        console.log('user id =>>>>', req.decoded.payload.id)
-        if (typeof req.decoded.payload.id === 'undefined') {
+        console.log("req in addlbael", req);
+        console.log('user id =>>>>', req.decoded.payload.userId)
+        if (typeof req.decoded.payload.userId === 'undefined') {
             throw new Error('user id is mandatory')
         } else {
             console.log("in addLabel note Controller");
             var labelData = {
                 "labelName": req.body.labelName,
-                "userId": req.decoded.payload.id
+                "userId": req.decoded.payload.userId
             }
             const loadLabel = new Promise((resolve, reject) => {
                 noteService.addLabel(labelData).then(data => {
@@ -313,6 +313,26 @@ exports.addLabel = (req, res) => {
             })
         }
     } catch (err) {
+        console.log("error in controller", err);
+        return res.status(422).send(err)
+    }
+}
+
+exports.getAllLabels = (req, res) => {
+    try {
+        console.log("userId", req.decoded.payload.userId);
+        var userId = req.decoded.payload.userId;
+        var getLabels = new Promise((resolve, reject) => {
+            noteService.getAllLabels(userId).then(data => {
+                resolve(data)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+        getLabels.then(labelDetails => res.status(200).send(labelDetails))
+            .catch(err => res.status(404).send({ "message": "no labels found" }))
+    }
+    catch (err) {
         console.log("error in controller", err);
         return res.status(422).send(err)
     }
