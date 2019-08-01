@@ -82,8 +82,8 @@ exports.forgotPassword = (req, callback) => {
             if (err) {
                 return callback(err)
             } else if (data.length > 0) {
-               // console.log("data",data);
-                return callback(null,data);
+                // console.log("data",data);
+                return callback(null, data);
             }
             else {
                 return callback("user doesn't exist").status(404)
@@ -91,5 +91,22 @@ exports.forgotPassword = (req, callback) => {
         })
     } catch (err) {
         console.log("error in forgot password service ", err);
+    }
+}
+
+exports.setProfilePic = (req, callback) => {
+    try {
+        console.log("req in services",req.file.location);
+        
+        user.findOneAndUpdate({ _id: req.decoded.payload.userId }, { $set: { imageURL: req.file.location } }, (err, data) => {
+            if (err) {
+                return callback(err)
+            }
+            else {
+                return callback(null, data)
+            }
+        })
+    } catch (err) {
+        console.log("error in set prof service", err);
     }
 }

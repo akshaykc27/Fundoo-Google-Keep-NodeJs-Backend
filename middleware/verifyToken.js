@@ -16,10 +16,10 @@ exports.verifyToken = (req, res, next) => {
             }
             // req decoded and next will pass the controllers
             else {
-                console.log("payload of the token (decoded)",decoded);
-                console.log("req.decoded before",req.decoded);
+                // console.log("payload of the token (decoded)",decoded);
+                // console.log("req.decoded before",req.decoded);
                 req.decoded = decoded;
-                console.log("req.decoded after",req.decoded);
+                // console.log("req.decoded after",req.decoded);
                 console.log("token verify data====>", req.decoded)
                 next();
             }

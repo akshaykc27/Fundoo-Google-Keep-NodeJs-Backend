@@ -10,6 +10,7 @@ var userSchema = new mongoSchema({
     "password": { type: String }, // required: [true, "password is required"] },
     "verifyemail": { type: Boolean },
     "access_token": { type: String },
+    "imageURL" : {type:String}
 }, {
     timestamps: true
 });

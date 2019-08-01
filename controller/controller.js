@@ -65,32 +65,30 @@ exports.login = (req, res) => {
         req.checkBody('email', 'email is not valid').isEmail();
         req.checkBody('password', 'password should be min 8 characters').isLength({ min: 8 });
         var errors = req.validationErrors();
-        var response={}
-        if(errors)
-        {
+        var response = {}
+        if (errors) {
             response.success = false;
-            response.error= errors
+            response.error = errors
             return res.status(422).send(response)
         }
         else {
-            userService.login(req.body,(err,data) => {
-                if(err)
-                {
+            userService.login(req.body, (err, data) => {
+                if (err) {
                     return res.status(500).send(err)
 
                 }
-                else{
+                else {
                     var payload = {
-                        "userId" : data[0]._id
+                        "userId": data[0]._id
                     }
                     var token = generateToken.GenerateToken(payload);
-                    return res.status(200).send({"message" :data, "token" : token})
+                    return res.status(200).send({ "message": data, "token": token })
                 }
 
             })
-            
+
+        }
     }
-}
     catch (err) {
         console.log("error in login controller", err);
     }
@@ -98,77 +96,105 @@ exports.login = (req, res) => {
 
 }
 
-exports.login1 =(req,res) => {
-    req.checkBody('email','email is not valid').isEmail();
-    req.checkBody('password','pass should be min 8 characters').isLength({min:8});
+exports.login1 = (req, res) => {
+    req.checkBody('email', 'email is not valid').isEmail();
+    req.checkBody('password', 'pass should be min 8 characters').isLength({ min: 8 });
     var errors = req.validationErrors();
     var response = {}
-    if(errors) {
-        response.success=false;
+    if (errors) {
+        response.success = false;
         response.error = errors
         res.status(422).send(response)
     }
-    else{
+    else {
         async.waterfall([
-            function one(callback){
-                userService.login(req.body,(err,result) => {
-                    if(err){
+            function one(callback) {
+                userService.login(req.body, (err, result) => {
+                    if (err) {
                         callback(err)
                     }
-                    else
-                    {
-                        callback(null,result)
+                    else {
+                        callback(null, result)
                     }
                 })
             },
-            function two(result,callback){
-                var token = generateToken.GenerateToken({"id": result[0]._id});
-                callback(null,{result,"token" : token})
+            function two(result, callback) {
+                var token = generateToken.GenerateToken({ "id": result[0]._id });
+                callback(null, { result, "token": token })
             }
         ],
-        function(err,results) {
-            if(err){
-                return res.status(500).send(err);
+            function (err, results) {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+                else {
+                    console.log("login successful");
+                    return res.status(200).send(results);
+                }
             }
-            else{
-                console.log("login successful");  
-                return res.status(200).send(results);
-            }
-        }
         )
     }
 }
- 
-exports.forgotPassword = (req,res) => {
-    try{
-        req.checkBody("email","email is not valid").isEmail();
+
+exports.forgotPassword = (req, res) => {
+    try {
+        req.checkBody("email", "email is not valid").isEmail();
         var errors = req.validationErrors();
         var response = {};
-        if(errors)
-        {
+        if (errors) {
             response.error = errors;
             response.success = false;
             return res.status(422).send(response);
         }
-        else{
-            userService.forgotPassword(req.body , (err,data)=> {
-                console.log("asds",data);
-                if(err){
+        else {
+            userService.forgotPassword(req.body, (err, data) => {
+                console.log("asds", data);
+                if (err) {
                     return res.status(500).send(err);
                 }
-                else{
-                    console.log("asds",data);
-                    
-                    var payload={ "email":req.body.email}
-                    var obj=generateToken.GenerateToken(payload)
+                else {
+                    console.log("asds", data);
+
+                    var payload = { "email": req.body.email }
+                    var obj = generateToken.GenerateToken(payload)
                     var url = `${process.env.URL}/resetPassword?token=${obj.token}`
-                    sendMail.sendEMailFunction(url,req.body.email)
+                    sendMail.sendEMailFunction(url, req.body.email)
                     return res.status(200).send(data);
                 }
             })
         }
-    }catch(err)
-    {
-        console.log("error in forgot password controller",err);
+    } catch (err) {
+        console.log("error in forgot password controller", err);
     }
+}
+
+exports.setProfilePic = (req, res) => {
+    try{
+    //console.log('req =======================> ',req.body);
+    //console.log('file location  in setProfilePic', res.file.location);
+    console.log('userid in setProfilePic', req.decoded.payload.userId);
+    var response = {};
+    // const userId = req.decoded.payload.userId;
+    // var image =req.file;
+
+    userService.setProfilePic(req,(err, data) => {
+        console.log("data in controller profile", data);
+        if (err) {
+            response.error = err,
+            response.success = false;
+            res.status(500).send(response);
+
+        }else {
+            response.success = true;
+            response.data = data;
+            res.status(200).send(response);
+        }
+
+    })
+    }catch(err) {
+        console.log("error in set prof controller",err);
+        
+    }
+
+
 }

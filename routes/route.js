@@ -1,13 +1,15 @@
 const express = require('express');
 const userController = require('../controller/controller');
 const noteController = require('../controller/noteController');
-const middle = require('../middleware/verifyToken')
+const middle = require('../middleware/verifyToken');
+const upload = require('../middleware/imageUpload');
 const router = express.Router();
 
 // user routes
 router.post('/register',userController.register);
 router.post('/login',userController.login);
 router.post('/forgotPassword',userController.forgotPassword);
+router.post('/setProfilePic',upload.single('fundoo'),middle.verifyToken,userController.setProfilePic)
 
 
 //note routes
