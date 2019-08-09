@@ -9,7 +9,8 @@ const router = express.Router();
 router.post('/register',userController.register);
 router.post('/login',userController.login);
 router.post('/forgotPassword',userController.forgotPassword);
-router.post('/setProfilePic',upload.single('fundoo'),middle.verifyToken,userController.setProfilePic)
+router.put('/setProfilePic',upload.single('fundoo'),middle.verifyToken,userController.setProfilePic)
+
 
 
 //note routes
@@ -22,6 +23,7 @@ router.post('/deleteNote', noteController.deleteNote);
 router.post('/archive', noteController.isArchive)
 router.post('/trash', noteController.isTrash);
 router.put('/changeColor',noteController.changeColor);
+router.post('/setReminder',noteController.reminder);
 
 //label routes
 router.post('/addLabel',middle.verifyToken,noteController.addLabel);

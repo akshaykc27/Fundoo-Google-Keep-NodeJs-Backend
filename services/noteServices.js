@@ -172,7 +172,7 @@ exports.reminder = (req, callback) => {
     try {
         //console.log(" data in notemodel", req.body);
         var date = new Date(req.body.date);
-        note.findOneAndUpdate({ _id: req.body.noteID }, { $set: { reminder: date } }, (err, data) => {
+        note.findOneAndUpdate({ _id: req.body.noteId }, { $set: { reminder: date } }, (err, data) => {
             if (err) {
                 console.log("error in notemodel", err);
                 return callback(err);
