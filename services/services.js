@@ -94,11 +94,26 @@ exports.forgotPassword = (req, callback) => {
     }
 }
 
+exports.resetPassword = body => new Promise((resolve, reject) => {
+    console.log("body in reset password",body);
+    
+    const encryptedPassword = hash(body.password);
+    console.log(encryptedPassword);
+    user.findOneAndUpdate({ email : body.email }, {
+        $set: { password: encryptedPassword }
+    }).then(data => resolve(data)
+    ).catch(error => {
+        console.log("error", error);
+        reject(error);
+    }
+    )
+})
+
 exports.setProfilePic = (req, callback) => {
     try {
-        console.log("req in services",req.file.location);
-        
-        user.findOneAndUpdate({ _id: req.decoded.payload.userId }, { $set: { imageURL: req.file.location } }, (err, data) => {
+        console.log("req in services", req.file.location);
+
+        user.findOneAndUpdate({ _id : req.decoded.payload.userId }, { $set: { imageURL: req.file.location } }, (err, data) => {
             if (err) {
                 return callback(err)
             }

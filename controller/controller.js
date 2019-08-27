@@ -157,7 +157,7 @@ exports.forgotPassword = (req, res) => {
 
                     var payload = { "email": req.body.email }
                     var obj = generateToken.GenerateToken(payload)
-                    var url = `${process.env.URL}/resetPassword?token=${obj.token}`
+                    var url = `${process.env.URL}/resetPassword/${obj.token}`
                     sendMail.sendEMailFunction(url, req.body.email)
                     return res.status(200).send(data);
                 }
@@ -168,32 +168,65 @@ exports.forgotPassword = (req, res) => {
     }
 }
 
-exports.setProfilePic = (req, res) => {
-    try{
-    //console.log('req =======================> ',req.body);
-    //console.log('file location  in setProfilePic', res.file.location);
-    console.log('userid in setProfilePic', req.decoded.payload.userId);
-    var response = {};
-    // const userId = req.decoded.payload.userId;
-    // var image =req.file;
-
-    userService.setProfilePic(req,(err, data) => {
-        console.log("data in controller profile", data);
-        if (err) {
-            response.error = err,
-            response.success = false;
-            res.status(500).send(response);
-
-        }else {
-            response.success = true;
-            response.data = data;
-            res.status(200).send(response);
-        }
-
-    })
-    }catch(err) {
-        console.log("error in set prof controller",err);
+exports.resetPassword = (req, res) => {
+    try {
+        console.log("in reset controller");
         
+        req.checkBody('password', 'password is a required field').isLength({ min: 8 });
+        req.checkBody('confirmPassword', 'confirm password is a required field').isLength({ min: 8 }).matches(req.body.password).withMessage('Passwords dont match');
+        const payload = req.decoded.payload;
+        console.log("payload ==>" ,payload);
+        
+        const userData = {
+            'email':payload.email,
+            'password': req.body.password
+        }
+        const errors = req.validationErrors();
+        var response = {};
+        if (errors) {
+            response.error = errors;
+            response.success = false;
+            return res.status(422).send(response);
+        }
+        else {
+            const resetPromise = new Promise((resolve, reject) => {
+                userService.resetPassword(userData).then(data => resolve(data)).catch(error => reject(error))
+            })
+            resetPromise.then(data => res.status(200).send(data)).catch(err => res.status(500).send({ 'message': "something went wrong" }))
+        }
+    }
+    catch (error) {
+        console.log("error in reset controller", error);
+    }
+}
+
+
+exports.setProfilePic = (req, res) => {
+    try {
+        //console.log('req =======================> ',req.body);
+        //console.log('file location  in setProfilePic', res.file.location);
+        console.log('userid in setProfilePic', req.decoded.payload.userId);
+        var response = {};
+        // const userId = req.decoded.payload.userId;
+        // var image =req.file;
+
+        userService.setProfilePic(req, (err, data) => {
+            console.log("data in controller profile", data);
+            if (err) {
+                response.error = err,
+                    response.success = false;
+                res.status(500).send(response);
+
+            } else {
+                response.success = true;
+                response.data = data;
+                res.status(200).send(response);
+            }
+
+        })
+    } catch (err) {
+        console.log("error in set prof controller", err);
+
     }
 
 

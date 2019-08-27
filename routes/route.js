@@ -9,6 +9,7 @@ const router = express.Router();
 router.post('/register',userController.register);
 router.post('/login',userController.login);
 router.post('/forgotPassword',userController.forgotPassword);
+router.post('/resetPassword/:token',middle.verifyToken,userController.resetPassword);
 router.put('/setProfilePic',upload.single('fundoo'),middle.verifyToken,userController.setProfilePic)
 
 
