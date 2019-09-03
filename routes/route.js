@@ -13,6 +13,15 @@ router.post('/resetPassword/:token',middle.verifyToken,userController.resetPassw
 router.put('/setProfilePic',upload.single('fundoo'),middle.verifyToken,userController.setProfilePic)
 
 
+router.get('/', ensureAuthenticated, function(req, res, next) {
+    res.render('user', { user: req.user });
+  });
+
+  function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    res.redirect('/auth/login')
+    }
+
 
 //note routes
 router.post('/createNote',middle.verifyToken, noteController.createNote)
