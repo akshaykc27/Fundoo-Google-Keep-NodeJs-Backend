@@ -14,25 +14,16 @@ const swagger = require('swagger-ui-express');
 swaggerDocument = require('./swagger/swagger.json');
 var auth = require('./routes/auth');
 var passportSetup = require('./auth /google');
+const elastic = require('./routes/elasticsearchRoutes');
 
 app.use(expressValidator());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// app.all('*', function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-//   res.header("Access-Control-Allow-Headers", "*", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
-// app.use(session({
-//   secret: 's3cr3t',
-//   resave: true,
-//   saveUninitialized: true
-// }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/auth', auth);
+app.use('/elastic',elastic)
 passport.serializeUser(function (user, done) {
   done(null, user);
 });

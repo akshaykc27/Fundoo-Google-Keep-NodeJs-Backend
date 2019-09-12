@@ -1,5 +1,6 @@
 const note = require('../model/noteModel')
-const labelModel = require('../model/labelModel')
+const labelModel = require('../model/labelModel');
+const elasticsearch = require('../elasticSearch/elasticSearch');
 /**
  *@description:To create a note along with title and description   
  */
@@ -38,6 +39,7 @@ exports.createNote = (noteData, callback) => {
  */
 exports.findAllNote = (req, callback) => {
     try {
+        let userId = req.decoded.payload.userId
         console.log("note data in notemodel", req.decoded.payload.userId);
         note.find({ userID: req.decoded.payload.userId }, (err, data) => {
             if (err) {
@@ -45,6 +47,7 @@ exports.findAllNote = (req, callback) => {
                 return callback(err);
             } else {
                 console.log("data in notemodel", data);
+                elasticsearch.initMapping(userId,"notes",data);
                 return callback(null, data);
             }
 
