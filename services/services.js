@@ -28,7 +28,6 @@ exports.register = (req, callback) => {
                 });
                 newUser.save((err, result) => { //save the user in database
                     if (err) {
-                        console.log("error came");
                         console.log("error in model file", err);
                         return callback(err);
                     } else {

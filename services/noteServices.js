@@ -47,7 +47,7 @@ exports.findAllNote = (req, callback) => {
                 return callback(err);
             } else {
                 console.log("data in notemodel", data);
-                elasticsearch.initMapping(userId,"notes",data);
+                elasticsearch.addDocument(data);
                 return callback(null, data);
             }
 
