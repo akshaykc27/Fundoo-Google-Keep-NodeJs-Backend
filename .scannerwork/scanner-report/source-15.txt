@@ -59,7 +59,7 @@ exports.findAllNote = (req, callback) => {
 /**
  *@description:add label to note using labels id and note id 
  */
-z
+
 exports.addlabeltoNote = (req, callback) => {
     try {
         console.log("label data in labelmodel", req.body);

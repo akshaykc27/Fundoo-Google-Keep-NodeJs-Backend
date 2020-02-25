@@ -12,7 +12,7 @@ app.use(cors());
 app.options('*', cors());
 var expressValidator = require('express-validator');
 const swagger = require('swagger-ui-express');
-let swaggerDocument = require('./swagger/swagger.json');
+swaggerDocument = require('./swagger/swagger.json');
 var auth = require('./routes/auth');
 var passportSetup = require('./auth /google');
 const elastic = require('./routes/elasticsearchRoutes');

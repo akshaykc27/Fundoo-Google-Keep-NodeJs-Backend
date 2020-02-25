@@ -82,7 +82,7 @@ exports.search = (req, res) => {
             console.log("error in search func", err);
         }
         else {
-            console.log("sucess", res.hits.hits);
+            console.log("success", res.hits.hits);
             //console.log("sucess", res.hits.hits[1]._source.data)
         }
     })
